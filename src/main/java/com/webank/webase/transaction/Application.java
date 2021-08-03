@@ -31,7 +31,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-        log.info("main run success...");
+        try{
+            SpringApplication.run(Application.class, args);
+            log.info("main run success...");
+        }catch (Exception e){
+            System.err.print(e);
+        }
+
     }
 }

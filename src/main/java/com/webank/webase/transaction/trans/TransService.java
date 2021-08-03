@@ -21,6 +21,7 @@ import com.webank.webase.transaction.base.ResponseEntity;
 import com.webank.webase.transaction.base.exception.BaseException;
 import com.webank.webase.transaction.config.Web3Config;
 import com.webank.webase.transaction.contract.ContractMapper;
+import com.webank.webase.transaction.extend.data.DataSaveInfoDto;
 import com.webank.webase.transaction.keystore.KeyStoreService;
 import com.webank.webase.transaction.keystore.entity.EncodeInfo;
 import com.webank.webase.transaction.keystore.entity.KeyStoreInfo;
@@ -627,4 +628,19 @@ public class TransService {
     public void deleteDataSchedule() {
         transMapper.deletePartData(properties.getKeepDays());
     }
+
+
+    //public DataSaveInfoDto getDataSaveInfoDto(int groupId, String uuidStateless) throws BaseException {
+    //    TransInfoDto transInfo = transMapper.selectTransInfo(groupId, uuidStateless);
+    //    if (transInfo == null) {
+    //        log.warn("getTransactionHash fail. trans is not exist uuidStateless:{}.",
+    //                uuidStateless);
+    //        throw new BaseException(ConstantCode.TRANS_NOT_EXIST);
+    //    }
+    //    DataSaveInfoDto dataSaveInfoDto = new DataSaveInfoDto();
+    //    dataSaveInfoDto.setTransHash(transInfo.getTransHash());
+    //    dataSaveInfoDto.setTransOutput(transInfo.getTransOutput());
+    //    dataSaveInfoDto.setReceiptStatus(transInfo.isReceiptStatus());
+    //    transInfo.
+    //}
 }

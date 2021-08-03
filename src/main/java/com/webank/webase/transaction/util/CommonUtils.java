@@ -14,30 +14,27 @@
 
 package com.webank.webase.transaction.util;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.Random;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
+import com.webank.webase.transaction.base.ConstantCode;
+import com.webank.webase.transaction.base.exception.BaseException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.fisco.bcos.web3j.crypto.EncryptType;
 import org.fisco.bcos.web3j.crypto.Sign.SignatureData;
 import org.fisco.bcos.web3j.utils.Numeric;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.webank.webase.transaction.base.ConstantCode;
-import com.webank.webase.transaction.base.exception.BaseException;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Random;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * CommonUtils.
@@ -330,4 +327,37 @@ public class CommonUtils {
 				+ (ipAddressByteArray[ipAddressByteArray.length - 1] & 0xFF));
 		return workerId;
 	}
+
+	public static String getContractBin(String url){
+		ClassPathResource resource = new ClassPathResource(url);
+		InputStream inputStream;
+		String result = null;
+		try {
+			inputStream = resource.getInputStream();
+			result = IOUtils.toString(inputStream, String.valueOf(StandardCharsets.UTF_8));
+		}catch (IOException e){
+			log.debug("[getContractBin] read file error,"+e);
+		}
+		return result;
+	}
+
+	public static List<Object> getContractAbi(String url){
+		ClassPathResource resource = new ClassPathResource(url);
+		InputStream inputStream;
+		List<Object> result = null;
+		try {
+			inputStream = resource.getInputStream();
+			result = JsonUtils.toJavaObjectList(IOUtils.toString(inputStream, String.valueOf(StandardCharsets.UTF_8)),
+					Object.class);
+		}catch (IOException e){
+			log.debug("[getContractAbi] read file error,"+e);
+		}
+		return result;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(getContractBin("bin/Data.bin"));
+		System.out.println(getContractAbi("abi/Data.abi"));
+	}
+
 }

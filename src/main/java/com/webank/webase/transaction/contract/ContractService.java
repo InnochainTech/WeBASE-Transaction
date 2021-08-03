@@ -30,10 +30,7 @@ import com.webank.webase.transaction.util.JsonUtils;
 import com.webank.webase.transaction.util.LogUtils;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -216,7 +213,9 @@ public class ContractService {
             log.warn("getAddress fail. contract has not been deployed uuidDeploy:{}.", uuidDeploy);
             throw new BaseException(ConstantCode.CONTRACT_NOT_DEPLOED);
         }
-        response.setData(contractAddress);
+        Map<String,String> resultmap = new HashMap<>();
+        resultmap.put("contractAddress",contractAddress);
+        response.setData(resultmap);
         return response;
     }
     

@@ -32,6 +32,13 @@ public interface ConstantCode {
             "{\"code\":203006,\"msg\":\"contract address cannot be empty\"}";
     String FUNCTION_NAME_IS_EMPTY = "{\"code\":203007,\"msg\":\"function name cannot be empty\"}";
 
+    //String CONTRACTADDRESS_IS_EMPTY = "{\"code\":203008,\"msg\":\"contract address cannot be empty\"}";
+    String UUIDSTATELESS_IS_EMPTY = "{\"code\":203008,\"msg\":\"contract address cannot be empty\"}";
+
+    String KEY_IS_EMPTY = "{\"code\":203009,\"msg\":\"key cannot be empty\"}";
+
+    String HOUR_DATA_IS_EMPTY = "{\"code\":203010,\"msg\":\"hourData cannot be empty\"}";
+
     // general error
     RetCode UUID_IS_EXISTS = RetCode.mark(303001, "uuid is already exists");
     RetCode GET_SIGN_DATA_ERROR = RetCode.mark(303002, "get sign data from sign service error");
@@ -59,8 +66,16 @@ public interface ConstantCode {
     RetCode SIGN_USERID_ERROR = RetCode.mark(303021, "signUserId check failed");
     RetCode FUNCTION_NOT_EXISTS = RetCode.mark(303022, "function is not exists");
     RetCode DATA_NOT_EXISTS = RetCode.mark(303023, "data is not exists");
+    RetCode  DATA_FORMAT_ERROR = RetCode.mark(303024,"data format error");
+    RetCode  YEAR_FORMAT_ERROR = RetCode.mark(303025,"year error");
+    RetCode  MONTH_FORMAT_ERROR = RetCode.mark(303026,"month error");
+    RetCode  DAY_FORMAT_ERROR = RetCode.mark(303027,"day error");
+    RetCode  HOUR_FORMAT_ERROR = RetCode.mark(303028,"hour error");
 
+    //ERROR(599,"发送交易失败"),
     // system error
     RetCode SYSTEM_ERROR = RetCode.mark(103001, "system error");
     RetCode PARAM_VAILD_FAIL = RetCode.mark(103002, "param valid fail");
+
+
 }
