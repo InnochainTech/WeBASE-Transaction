@@ -39,4 +39,6 @@ public class TransInfoDto {
     private String transOutput;
     private boolean receiptStatus;
     private Date gmtCreate;
+    private String transMessage;
+    private String blockNumber;
 }

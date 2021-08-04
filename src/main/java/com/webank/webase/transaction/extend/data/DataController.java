@@ -7,6 +7,7 @@ import com.webank.webase.transaction.base.exception.BaseException;
 import com.webank.webase.transaction.contract.ContractService;
 import com.webank.webase.transaction.contract.entity.ReqDeployInfo;
 import com.webank.webase.transaction.trans.TransService;
+import com.webank.webase.transaction.trans.entity.ReqTransCallInfo;
 import com.webank.webase.transaction.trans.entity.ReqTransSendInfo;
 import com.webank.webase.transaction.trans.entity.TransInfoDto;
 import com.webank.webase.transaction.util.AddressUtils;
@@ -60,7 +61,7 @@ public class DataController extends BaseController {
     @PostMapping("/deployDataContract")
     public ResponseEntity deployDataContract(@Valid @RequestBody DataDeployInfo dataDeployInfo, BindingResult result) throws BaseException, InterruptedException {
 
-        log.info("deploy start. deployInfo:{}", JsonUtils.toJSONString(dataDeployInfo));
+        log.info("deployDataContract start. deployInfo:{}", JsonUtils.toJSONString(dataDeployInfo));
         checkParamResult(result);
         ReqDeployInfo reqDeployInfo = new ReqDeployInfo();
         reqDeployInfo.setGroupId(groupId);
@@ -88,34 +89,41 @@ public class DataController extends BaseController {
     }
 
     @ApiOperation(value = "查找数据")
-    @ResponseBody
-    @GetMapping("/getData")
-    public ResponseEntity getData(@RequestParam(value = "contractAddr", required = true) String contractAddr,
-                          @RequestParam(value = "key", required = true) String key
-                          ){
-        String data = new String();
-        try {
-            //switch (key.length()){
-            //    case 10:
-            //        data = dataClientUtils.getData(contractAddr,key);
-            //        break;
-            //    case 8:
-            //        data = dataClientUtils.dailyDatas(contractAddr,key);
-            //        break;
-            //    case 6:
-            //        data = dataClientUtils.monthlyDatas(contractAddr,key);
-            //        break;
-            //    case 4:
-            //        data = dataClientUtils.annualDatas(contractAddr,key);
-            //        break;
-            //    default:
-            //        data = dataClientUtils.rootData(contractAddr);
-            //        break;
-            //}
-        }catch (Exception e){
-            throw new Web3Exception(ResultEnum.ERROR);
+    @PostMapping("/getData")
+    public ResponseEntity getData(@Valid @RequestBody DataGetInfo dataGetInfo,BindingResult result) throws BaseException {
+        log.info("getData start. Info:{}", JsonUtils.toJSONString(dataGetInfo));
+        checkParamResult(result);
+
+        ReqTransCallInfo reqTransCallInfo = new ReqTransCallInfo();
+        reqTransCallInfo.setGroupId(groupId);
+        reqTransCallInfo.setUuidDeploy(dataGetInfo.getUuidDeploy());
+        List<Object> funcParam = new ArrayList<>();
+        funcParam.add(dataGetInfo.getKey());
+        reqTransCallInfo.setFuncParam(funcParam);
+        reqTransCallInfo.setContractAbi(CommonUtils.getContractAbi("abi/Data.abi"));
+        reqTransCallInfo.setContractAddress(dataGetInfo.getContractAddress());
+        String funcName = new String();
+
+        switch (dataGetInfo.getKey().length()){
+            case 10:
+                funcName = "getData";
+                break;
+            case 8:
+                funcName = "dailyDatas";
+                break;
+            case 6:
+                funcName = "monthlyDatas";
+                break;
+            case 4:
+                funcName = "annualDatas";
+                break;
+            default:
+                funcName = "rootData";
+                break;
         }
-        return ResultUtils.success(data);
+        reqTransCallInfo.setFuncName(funcName);
+        return transService.call(reqTransCallInfo);
+
     }
 
     @ApiOperation(value = "上传数据")
@@ -176,8 +184,9 @@ public class DataController extends BaseController {
         }).start();
         latch.await();
 
-        TransInfoDto transInfo = transMapper.selectTransInfo(groupId, uuidStateless);
-        return transService.getTransInfo(groupId, dataSaveInfo.getUuidStateless());
+        DataSaveInfoDto dataSaveInfoDto = transService.getDataSaveInfoDto(groupId, dataSaveInfo.getUuidStateless());
+        return ResultUtils.success(dataSaveInfoDto);
+
     }
 
     private int getMonthDays(int _year,int _month){

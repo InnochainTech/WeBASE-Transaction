@@ -29,6 +29,7 @@ import org.fisco.bcos.web3j.abi.TypeReference;
 import org.fisco.bcos.web3j.abi.datatypes.DynamicArray;
 import org.fisco.bcos.web3j.abi.datatypes.Event;
 import org.fisco.bcos.web3j.abi.datatypes.Type;
+import org.fisco.bcos.web3j.abi.datatypes.generated.Bytes32;
 import org.fisco.bcos.web3j.protocol.core.methods.response.AbiDefinition;
 import org.fisco.bcos.web3j.protocol.core.methods.response.AbiDefinition.NamedType;
 import org.fisco.bcos.web3j.protocol.core.methods.response.Log;
@@ -255,6 +256,7 @@ public class ContractAbiUtil {
                 } else {
                     outputType = ContractTypeUtil.getType(funOutputTypes.get(i));
                     value = ContractTypeUtil.decodeResult(typeList.get(i), outputType);
+                    //System.out.println((ExtendsStringUtils.encodeHexString((Bytes32)value)));
                     result.add(value);
                 }
             }

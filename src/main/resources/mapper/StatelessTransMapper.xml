@@ -57,7 +57,9 @@
         trans_hash as transHash,
         trans_output as transOutput,
         receipt_status as receiptStatus,
-        gmt_create as gmtCreate
+        gmt_create as gmtCreate,
+        trans_message as transMessage,
+        block_number as blockNumber
     </sql>
     
     <insert id="insertTransInfo" parameterType="com.webank.webase.transaction.trans.entity.TransInfoDto">
@@ -72,7 +74,9 @@
             `sign_type`,
             `sign_user_id`,
             `gmt_create`,
-            `gmt_modify`
+            `gmt_modify`,
+            `trans_message`,
+            `block_number`
         ) values (
             #{groupId},
             #{uuidStateless},
@@ -84,7 +88,9 @@
             #{signType},
             #{signUserId},
             #{gmtCreate},
-            DATE_SUB(NOW(),INTERVAL 1 DAY)
+            DATE_SUB(NOW(),INTERVAL 1 DAY),
+            #{transMessage},
+            #{blockNumber}
         )
     </insert>
     
@@ -140,6 +146,8 @@
             trans_output = #{transOutput},
             receipt_status = #{receiptStatus},
             handle_status = #{handleStatus},
+            trans_message=#{transMessage},
+            block_number=#{blockNumber},
             gmt_modify = NOW() 
         where id = #{id}
           and gmt_create = #{gmtCreate}
@@ -151,4 +159,5 @@
           where TO_DAYS(NOW())-TO_DAYS(gmt_create) >= #{keepDays}
         ]]>
     </delete>
+
 </mapper>

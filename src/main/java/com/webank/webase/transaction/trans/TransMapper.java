@@ -50,4 +50,5 @@ public interface TransMapper {
     void updateHandleStatus(TransInfoDto transInfoDto);
 
     void deletePartData(@Param(value = "keepDays") int keepDays);
+
 }

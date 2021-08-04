@@ -29,10 +29,8 @@ import com.webank.webase.transaction.keystore.entity.SignType;
 import com.webank.webase.transaction.trans.entity.ReqTransCallInfo;
 import com.webank.webase.transaction.trans.entity.ReqTransSendInfo;
 import com.webank.webase.transaction.trans.entity.TransInfoDto;
-import com.webank.webase.transaction.util.CommonUtils;
-import com.webank.webase.transaction.util.ContractAbiUtil;
-import com.webank.webase.transaction.util.LogUtils;
-import com.webank.webase.transaction.util.JsonUtils;
+import com.webank.webase.transaction.util.*;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
@@ -373,8 +371,12 @@ public class TransService {
                 function.getOutputParameters());
         if (typeList.size() > 0) {
             response.setData(ContractAbiUtil.callResultParse(funOutputTypes, typeList));
+
         } else {
             response.setData(typeList);
+        }
+        if(transInfo.getFuncName().equals("saveData")){
+            response.setData(ExtendsStringUtils.getDataSaveReturn(transOutput));
         }
         return response;
     }
@@ -486,6 +488,9 @@ public class TransService {
             if (receipt.isStatusOK()) {
                 transInfoDto.setHandleStatus(1);
             }
+            transInfoDto.setTransMessage(receipt.getMessage());
+            transInfoDto.setBlockNumber(Integer.parseInt(receipt.getBlockNumberRaw().substring(2,
+                    receipt.getBlockNumberRaw().length()), 16)+"");
             transMapper.updateHandleStatus(transInfoDto);
         } catch (Exception e) {
             log.error("fail transSend id:{}", id, e);
@@ -630,17 +635,19 @@ public class TransService {
     }
 
 
-    //public DataSaveInfoDto getDataSaveInfoDto(int groupId, String uuidStateless) throws BaseException {
-    //    TransInfoDto transInfo = transMapper.selectTransInfo(groupId, uuidStateless);
-    //    if (transInfo == null) {
-    //        log.warn("getTransactionHash fail. trans is not exist uuidStateless:{}.",
-    //                uuidStateless);
-    //        throw new BaseException(ConstantCode.TRANS_NOT_EXIST);
-    //    }
-    //    DataSaveInfoDto dataSaveInfoDto = new DataSaveInfoDto();
-    //    dataSaveInfoDto.setTransHash(transInfo.getTransHash());
-    //    dataSaveInfoDto.setTransOutput(transInfo.getTransOutput());
-    //    dataSaveInfoDto.setReceiptStatus(transInfo.isReceiptStatus());
-    //    transInfo.
-    //}
+    public DataSaveInfoDto getDataSaveInfoDto(int groupId, String uuidStateless) throws BaseException {
+        TransInfoDto transInfo = transMapper.selectTransInfo(groupId, uuidStateless);
+        if (transInfo == null) {
+            log.warn("getDataSaveInfoDto fail. trans is not exist uuidStateless:{}.",
+                    uuidStateless);
+            throw new BaseException(ConstantCode.TRANS_NOT_EXIST);
+        }
+        DataSaveInfoDto dataSaveInfoDto = new DataSaveInfoDto();
+        dataSaveInfoDto.setTransHash(transInfo.getTransHash());
+        dataSaveInfoDto.setOutput(ExtendsStringUtils.getDataSaveReturn(transInfo.getTransOutput()));
+        dataSaveInfoDto.setReceiptStatus(transInfo.isReceiptStatus());
+        dataSaveInfoDto.setTransMassage(transInfo.getTransMessage());
+        dataSaveInfoDto.setBlockNumber(transInfo.getBlockNumber());
+        return dataSaveInfoDto;
+    }
 }

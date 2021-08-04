@@ -3,6 +3,7 @@ package com.webank.webase.transaction.extend.data;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -12,6 +13,8 @@ import java.util.Date;
 @Data
 public class DataSaveInfoDto {
     private String transHash;
-    private String transOutput;
+    private Map<String,String> Output;
     private boolean receiptStatus;
+    private String transMassage;
+    private String blockNumber;
 }
